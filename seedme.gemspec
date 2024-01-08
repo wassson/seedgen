@@ -10,6 +10,6 @@ Gem::Specification.new do |s|
   s.email                      = 'austinpwasson@gmail.com'
   s.files                      = Dir['lib/seedme/**/*']
   s.license                    = 'MIT'
-  s.add_development_dependency = 'rails'
-  s.add_development_dependency = 'minitest'
+  s.add_development_dependency 'rails'
+  s.add_development_dependency 'minitest'
 end
