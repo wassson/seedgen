@@ -22,6 +22,7 @@ module SeedMe
   end
 
   # NOTES
-  # ApplicationRecord.descendants[0].columns_hash => email.sql_type_metadata.type = :string
+  # - ApplicationRecord.descendants[0].columns_hash => email.sql_type_metadata.type = :string
+  # - ModelRelationshipMap
 end
 

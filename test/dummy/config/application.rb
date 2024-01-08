@@ -16,9 +16,10 @@ module Dummy
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w(assets tasks))
 
-    config.after_initialize do
-      Rails.application.eager_load!
-    end
+    # TODO: SeedMe
+    # config.after_initialize do
+    #   Rails.application.eager_load!
+    # end
 
     # Configuration for the application, engines, and railties goes here.
     #
