@@ -12,6 +12,6 @@ SEEDFILE=1 bundle exec rails db:schema:load
 
 Or, pass `SEED=1` before the schema load command to have `SeedMe` attempt to automatically
 seed your database without generating a seed file:
-```
+```bash
 SEED=1 bundle exec rails db:schema:load
 ```

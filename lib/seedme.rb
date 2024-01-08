@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-include ActiveRecord
+require "active_record"
+require "seedme/railtie"
 
 module SeedMe
   def self.models
