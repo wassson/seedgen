@@ -10,6 +10,11 @@ module Dummy
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
 
+    # TODO: SeedMe
+    # config.after_initialize do
+    #   Rails.application.eager_load!
+    # end
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

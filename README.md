@@ -1,28 +1,31 @@
 # Seedme
-Short description and motivation.
-
-## Usage
-How to use my plugin.
+Generate seed files based on your schema.
 
 ## Installation
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "seedme"
+gem "seedme", "~> #{Seedme::VERSION}"
 ```
 
-And then execute:
+## Usage
+SeedMe hooks in to your models and their relationships to build you a seed file. After installation,
+run: 
+
 ```bash
-$ bundle
+SEED=1 rails db:schema:load
 ```
 
-Or install it yourself as:
-```bash
-$ gem install seedme
+The above command generates `db/seedme.rb` and seeds your database with the output of this new file based on your schema/models.
+
+Note: You may notice SeedMe missing some of your models. If this is the case, it is because
+your application needs to eager load its classes for SeedMe to see them. 
+In `config/application.rb`, add:
+
+```ruby
+config.after_initialize do
+  Rails.application.eager_load!
+end
 ```
 
-## Contributing
-Contribution directions go here.
-
-## License
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+and rerun `SEED=1 rails db:schema:load`.
