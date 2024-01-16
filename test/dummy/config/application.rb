@@ -11,9 +11,11 @@ module Dummy
     config.load_defaults Rails::VERSION::STRING.to_f
 
     # TODO: SeedMe
-    # config.after_initialize do
-    #   Rails.application.eager_load!
-    # end
+    if Rails.env.development? || Rails.env.test?
+      config.after_initialize do
+        Rails.application.eager_load!
+      end
+    end
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

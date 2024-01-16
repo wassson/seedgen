@@ -2,7 +2,7 @@ require_relative "lib/seedme/version"
 
 Gem::Specification.new do |spec|
   spec.name        = "seedme"
-  spec.version     = Seedme::VERSION
+  spec.version     = SeedMe::VERSION
   spec.authors     = ["Austin Wasson"]
   spec.email       = ["austinpwasson@gmail.com"]
   spec.homepage    = "https://github.com/wassson/seedme.git"

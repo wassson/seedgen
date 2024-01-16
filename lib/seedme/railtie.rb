@@ -1,4 +1,4 @@
-module Seedme
+module SeedMe
   class Railtie < ::Rails::Railtie
     rake_tasks do
       load "tasks/seedme_tasks.rake"

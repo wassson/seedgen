@@ -5,7 +5,7 @@ Generate seed files based on your schema.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "seedme", "~> #{Seedme::VERSION}"
+gem "seedme", "~> 0.0.1"
 ```
 
 ## Usage

@@ -1,3 +1,3 @@
-module Seedme
+module SeedMe
   VERSION = "0.1.0"
 end
