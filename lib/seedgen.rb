@@ -9,23 +9,54 @@ module SeedGen
 
   def self.run
     @models = Database.models || []
-    @seeded_models = []
+    @scaffold = {}
+    @scaffolded_models = []
 
-    @models.each do |model|
-      seed(model)
-      @seeded_models << model
-    end
-
-    puts database_seeded?
+    build_scaffold
   end
 
-  def self.seed(model)
+  def self.build_scaffold
+    @models.each do |model|
+      scaffold_model(model)
+      @scaffolded_models << model
+    end
+
+    if database_scaffolded?
+      write_scaffold_to_file
+    end
+  end
+
+  def self.write_scaffold_to_file
+    Dir.mkdir("db/seeds") unless File.exist?("db/seeds")
+    File.open("db/seeds/seedgen.rb", "w") do |file|
+      file.write("# TODO: Add any code that needs to run before data is created.\n\n")
+
+      @scaffold.each do |key, value|
+        create_model = "#{key}.create!("
+        attrs = []
+        value.each do |attr, v|
+          if v.is_a? String
+            attrs << "#{attr}: '#{v}'"
+          else
+            attrs << "#{attr}: #{v}"
+          end
+        end
+
+        create_model += "#{attrs.join(', ')})\n\n"
+        file.write(create_model)
+      end
+
+      file.write("# TODO: Add any code that needs to run after data is created.\n\n")
+    end
+  end
+
+  def self.scaffold_model(model)
     parents = parents(model)
     if parents.empty?
-      create_record(model)
+      write_to_scaffold(model)
     else
       parents.each do |parent|
-        seed(parent)
+        scaffold_model(parent)
       end
     end
   end
@@ -47,22 +78,21 @@ module SeedGen
     nonpersisted_parents
   end
 
-  def self.create_record(model)
-    puts "===================="
-    puts "Creating: #{model}"
+  def self.write_to_scaffold(model)
     attributes = attrs(model)
     parents = []
+
     model.reflect_on_all_associations(:belongs_to).each do |assoc|
       parents << assoc.name.to_s
     end
 
     unless parents.empty?
       parents.each do |parent|
-        attributes.merge!({ parent.to_sym => Object.const_get(parent.capitalize).first })
+        attributes.merge!({ "#{parent}_id" => 1 })
       end
     end
 
-    model.create!(attributes)
+    @scaffold[model] = attributes
   end
 
   def self.attrs(model)
@@ -78,8 +108,7 @@ module SeedGen
     data
   end
 
-  # TODO: validate that all records have been created
-  def self.database_seeded?
-    @models == @seeded_models
+  def self.database_scaffolded?
+    @models == @scaffolded_models
   end
 end

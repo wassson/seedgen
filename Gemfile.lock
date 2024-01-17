@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    seedgen (0.1.0)
+    seedgen (0.0.4)
       faker
       rails (>= 7.0)
 
