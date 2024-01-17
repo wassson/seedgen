@@ -17,13 +17,10 @@ module SeedGen
 
   def self.build_scaffold
     @models.each do |model|
-      scaffold_model(model)
-      @scaffolded_models << model
+      scaffold_record(model)
     end
-
-    if database_scaffolded?
-      write_scaffold_to_file
-    end
+    
+    write_scaffold_to_file
   end
 
   def self.write_scaffold_to_file
@@ -50,32 +47,23 @@ module SeedGen
     end
   end
 
-  def self.scaffold_model(model)
-    parents = parents(model)
-    if parents.empty?
+  def self.scaffold_record(model)
+    model_parents = parents(model)
+    if model_parents.empty?
       write_to_scaffold(model)
     else
-      parents.each do |parent|
-        scaffold_model(parent)
+      model_parents.each do |parent|
+        scaffold_record(parent)
       end
+      write_to_scaffold(model)
     end
   end
 
-  # returns parents that have not been persisted
-  # TODO: refactor with filter
-  # Ignore this awful code 🤮
   def self.parents(model)
-    parents = []
-    model.reflect_on_all_associations(:belongs_to) do |assoc|
-      parents << assoc.name.to_s.capitalize
-    end
-    nonpersisted_parents = []
-
-    parents.each do |parent|
-      next if parent.active_record.count > 0
-      nonpersisted_parents << parent.active_record
-    end
-    nonpersisted_parents
+    model_parents = model.reflect_on_all_associations(:belongs_to).map { 
+      |assoc| Object.const_get(assoc.name.capitalize) 
+    } 
+    model_parents.select { |p| @scaffold[p] }
   end
 
   def self.write_to_scaffold(model)
@@ -101,14 +89,11 @@ module SeedGen
     columns = model.content_columns
     columns.each do |column|
       unless SKIP_ATTRS.include?(column.name)
+        binding.b
         data[column.name.to_sym] = FakerData.generate(model, column)
       end
     end
 
     data
-  end
-
-  def self.database_scaffolded?
-    @models == @scaffolded_models
   end
 end
