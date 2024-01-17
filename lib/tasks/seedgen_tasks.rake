@@ -1,15 +1,15 @@
-require "seedme"
+require "seedgen"
 
-namespace :seedme do
+namespace :seedgen do
   desc "Seed database"
   task :seed do
     if ENV["SEED"] == "1"
-      # SeedMe.models
-      SeedMe.run
+      # SeedGen.models
+      SeedGen.run
     end
   end
 
   Rake.application["db:schema:load"].enhance do
-    Rake::Task["seedme:seed"].invoke
+    Rake::Task["seedgen:seed"].invoke
   end
 end

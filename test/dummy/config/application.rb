@@ -10,7 +10,7 @@ module Dummy
   class Application < Rails::Application
     config.load_defaults Rails::VERSION::STRING.to_f
 
-    # TODO: SeedMe
+    # TODO: SeedGen
     if Rails.env.development? || Rails.env.test?
       config.after_initialize do
         Rails.application.eager_load!

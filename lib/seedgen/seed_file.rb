@@ -1,4 +1,4 @@
-module SeedMe 
+module SeedGen
   module SeedFile
     def self.build
       # build

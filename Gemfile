@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-# Specify your gem's dependencies in seedme.gemspec.
+# Specify your gem's dependencies in seedgen.gemspec.
 gemspec
 
 gem "debug", ">= 1.0.0"

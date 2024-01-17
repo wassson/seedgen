@@ -1,4 +1,4 @@
-module SeedMe
+module SeedGen
   module Database 
     def self.adapter
       @adapter ||= ActiveRecord::Base.connection.adapter_name

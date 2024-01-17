@@ -1,11 +1,10 @@
-require "seedme/database/database"
-require "seedme/database/model_map"
-require "seedme/faker"
-require "seedme/railtie"
-require "seedme/seed_file"
-require "seedme/version"
+require "seedgen/database/database"
+require "seedgen/faker"
+require "seedgen/railtie"
+require "seedgen/seed_file"
+require "seedgen/version"
 
-module SeedMe
+module SeedGen
   SKIP_ATTRS = %w[ id created_at updated_at ]
 
   def self.run

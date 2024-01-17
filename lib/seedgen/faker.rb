@@ -1,6 +1,6 @@
 require 'faker'
 
-module SeedMe
+module SeedGen
   module FakerData
     class InvalidAttributeType < StandardError; end
 
