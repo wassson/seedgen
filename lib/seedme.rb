@@ -1,6 +1,6 @@
-require "faker"
 require "seedme/database/database"
 require "seedme/database/model_map"
+require "seedme/faker"
 require "seedme/railtie"
 require "seedme/seed_file"
 require "seedme/version"
@@ -72,57 +72,11 @@ module SeedMe
     columns = model.content_columns
     columns.each do |column|
       unless SKIP_ATTRS.include?(column.name)
-        data[column.name.to_sym] = faker(model, column)
+        data[column.name.to_sym] = FakerData.generate(model, column)
       end
     end
 
     data
-  end
-
-  class InvalidAttributeType < StandardError; end
-  def self.faker(model, column)
-    binding.b
-    case column.sql_type_metadata.type
-    when :binary
-      Faker::Number.binary
-    when :boolean
-      # TODO
-      true
-    when :date
-      # TODO
-      Faker::Date.random
-    when :datetime
-      Faker::Date.random
-    when :decimal
-      Faker::Number.decimal
-    when :float
-      3.03
-    when :integer
-      # TODO
-      if enum?(model, column.name)
-        range = model.defined_enums[column.name].length - 1
-        return Faker::Number.between(from: 0, to: range)
-      end
-      Faker::Number.number(digits: 4)
-    when :bigint
-      Faker::Number.number(digits: 10)
-    when :string
-      Faker::Alphanumeric.alpha(number: 7)
-    when :text
-      Faker::Company.bs
-    when :time
-      # TODO
-      Faker::Date.time
-    when :timestamp
-      # TODO
-      Faker::Date.time
-    else
-      raise InvalidAttributeType
-    end
-  end
-
-  def self.enum?(model, column)
-    model.defined_enums.key?(column)
   end
 
   # TODO: validate that all records have been created
