@@ -4,6 +4,8 @@ module SeedGen
   class FakerData
     class InvalidAttributeType < StandardError; end
 
+    #attr_accessor :options
+
     def self.generate(model, column)
       new(model, column).generate
     end
@@ -14,6 +16,8 @@ module SeedGen
     end
 
     def generate
+      options = column_options
+
       case @column.sql_type_metadata.type
       when :binary
         Faker::Number.binary
@@ -26,6 +30,7 @@ module SeedGen
       when :decimal
         Faker::Number.decimal
       when :float
+        # TODO
         3.03
       when :integer
         if enum?
@@ -37,7 +42,13 @@ module SeedGen
       when :bigint
         Faker::Number.number(digits: 10)
       when :string
-        Faker::Alphanumeric.alpha(number: 7)
+        if options.empty?
+          Faker::Lorem.characters(number: rand(3..30))
+        else
+          min = options[:minimum]
+          max = options[:maximum]
+          Faker::Lorem.characters(number: rand(min..max)) 
+        end
       when :text
         Faker::Company.bs
       when :time
@@ -51,6 +62,13 @@ module SeedGen
 
     def enum?
       @model.defined_enums.key?(@column)
+    end
+
+    # TODO: Validate by Validation Class Type 
+    def column_options
+      validators = @model.validators
+      options = validators.select { |validator| validator.attributes.include?(@column.name.to_sym) }
+      options&.first ? options.first.options : {}
     end
   end
 end

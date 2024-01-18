@@ -89,7 +89,6 @@ module SeedGen
     columns = model.content_columns
     columns.each do |column|
       unless SKIP_ATTRS.include?(column.name)
-        binding.b
         data[column.name.to_sym] = FakerData.generate(model, column)
       end
     end
