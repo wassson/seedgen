@@ -26,6 +26,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_16_000545) do
     t.string "last_name", null: false
     t.string "email", null: false
     t.string "password", null: false
+    t.decimal "hourly_wage", null: false
+    t.float "favorite_number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
