@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 module SeedGen
   module Database
     module Validations
       class InvalidValidator < StandardError; end
+      DUPLICATE_VALIDATION = "Duplicate validation found".freeze
+      CONFLICTING_VALIDATION = "Conflicting validation found".freeze
+      FIX_ATTRIBUTE = "FIX ME".freeze
+
       NUMERICALITY_VALIDATIONS = [
         :greater_than,
         :greater_than_or_equal_to,
@@ -13,44 +19,45 @@ module SeedGen
         :even,
         :in,
         :other_than
-      ]
+      ].freeze
 
       def self.run(validation, column)
         @validation = validation
-        @klass = @validation.class.to_s
+        @klass = @validation.first
         @column = column
 
-        handle_validation
+        validate_column
       end
 
       private
 
-      def self.handle_validation
+      def self.validate_column
         case @klass
         # when ActiveRecord::Validations::LengthValidator
         #   handle_length
-        when ActiveRecord::Validations::NumericalityValidator
-          binding.break
+        when "ActiveRecord::Validations::NumericalityValidator"
           handle_numericality
-        when "ActiveRecord::Validations::PresenceValidator"
           return
+        when "ActiveRecord::Validations::PresenceValidator"
+          return nil
         else
-          binding.b
-          raise InvalidValidator
+          # We don't want to throw, we want to prompt the user so
+          # they know how to fix what SeedGen couldn't generate itself.
+          # Ex: User.create(first_name: "FIX ME")
+          return FIX_ATTRIBUTE
         end
       end
 
+      # TODO: RESUME: iterate over validations to build attr
       def self.handle_numericality
-        options = @validation.options.keys
-        options.each do |o|
-          # TODO: I don't think we want to actually raise, but rather
-          # return something like "FIX ME" to provide the user with an
-          # obvious place to update the code.
-          raise InvalidValidator unless NUMERICALITY_VALIDATIONS.include?(o)
+        attr = nil
+        options = @validation.last
+        keys = options.keys
+        keys.each do |opt|
+          return FIX_ATTRIBUTE unless NUMERICALITY_VALIDATIONS.include?(opt)
 
-          # TODO: Is there a difference between:
-          # 1. Two separate calls to 'validates' vs.
-          # 2. One call to 'validates' with multiple options?
+          binding.break
+          attr = FakerData.generate()
         end
       end
     end

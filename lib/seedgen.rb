@@ -17,6 +17,8 @@ module SeedGen
     build_scaffold
   end
 
+  private
+
   def self.build_scaffold
     @models.each do |model|
       @model = model
@@ -62,16 +64,21 @@ module SeedGen
         attrs = []
         columns.each  do |column|
           if column[:validations].any?
-            column[:validations].each do |validation|
-              Database::Validations.run(validation, column)
+            @attr = { name: column[:name], value: nil }
+            validations = merge_validations(column[:validations])
+            build_attr(validations, column)
+            if column[:type] == :string
+              attrs << "#{@attr[:name]}: '#{@attr[:value]}'"
+            else
+              attrs << "#{@attr[:name]}: #{@attr[:value]}"
             end
           else
-            data = FakerData.generate(model, column)
-            if column[:type] == :string
-              attrs << "#{attr}: '#{data}'"
-            else
-              attrs << "#{attr}: #{data}"
-            end
+            # data = FakerData.generate(model, column)
+            # if column[:type] == :string
+            #   attrs << "#{attr}: '#{data}'"
+            # else
+            #   attrs << "#{attr}: #{data}"
+            # end
           end
         end
 
@@ -80,6 +87,25 @@ module SeedGen
       end
 
       file.write("# TODO: Add any code that needs to run after data is created.\n\n")
+    end
+  end
+
+  def self.merge_validations(validations)
+    vals = {}
+    validations.each do |validation|
+      if vals[validation.class.to_s]
+        vals[validation.class.to_s].merge!(validation.options)
+      else
+        vals[validation.class.to_s] = {}
+        vals[validation.class.to_s].merge!(validation.options)
+      end
+    end
+    vals
+  end
+
+  def self.build_attr(validations, column)
+    validations.each do |validation|
+      Database::Validations.run(validation, column)
     end
   end
 end
